@@ -24,18 +24,16 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { login, getCourseList } from '@/api/course'
-import { showSuccessToast, showFailToast, showLoadingToast } from 'vant'
+import { showSuccessToast, showFailToast } from 'vant'
 import { useRouter } from 'vue-router'
+import { startLoading, endLoading } from '@/utils/loading'
 
 const router = useRouter()
 const id = ref('')
 const passwd = ref('')
 const pattern = /\d{6}/;
 const onSubmit = async (values: object) => {
-    showLoadingToast({
-        message: '登录中...',
-        forbidClick: true,
-    })
+    startLoading('登录中...')
     getLogin()
 }
 // 登录
@@ -52,6 +50,7 @@ const getLogin = async () => {
         getCourse()
         showSuccessToast('登录成功')
     } catch (error) {
+        endLoading()
         showFailToast('登录失败')
     }
 
@@ -66,9 +65,11 @@ const getCourse = async () => {
             passwd: user.passwd
         })
         localStorage.setItem('courses', JSON.stringify(list))
+        endLoading()
         showSuccessToast('课表获取成功')
         router.push('/course')
     } catch (error) {
+        endLoading()
         showFailToast('课表获取失败')
     }
 }

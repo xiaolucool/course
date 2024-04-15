@@ -33,7 +33,6 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  console.log(to, from, next);
   
   document.title = to.meta.title as string
   const user = JSON.parse(localStorage.getItem('user') || '{}')

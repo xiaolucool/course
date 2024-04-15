@@ -4,7 +4,8 @@ import type { CourseModel } from '@/stores/course'
 import { ref, type Ref } from 'vue'
 import { weekTitle } from '@/stores/course' // 格式化周
 import { getCourseList, getLastRequestTime, login } from '@/api/course'
-import { showLoadingToast, showSuccessToast, showFailToast, showConfirmDialog } from 'vant'
+import { showSuccessToast, showFailToast, showConfirmDialog } from 'vant'
+import { startLoading, endLoading } from '@/utils/loading'
 
 export interface User {
     id: string,
@@ -47,10 +48,12 @@ const handleAction = (user: User) => {
         message: `上次刷新：${lastTime.value}`,
     })
         .then(() => {
+            startLoading('课表刷新')
             onLogin(user)
             console.log('confirm')
         })
         .catch(() => {
+            endLoading()
             showRefresh.value = !showRefresh.value
             console.log('cancel')
         })
@@ -58,11 +61,6 @@ const handleAction = (user: User) => {
 
 // 登录爬取
 const onLogin = async (user: User) => {
-    console.log('submit!');
-    showLoadingToast({
-        message: '刷新中...',
-        forbidClick: true,
-    })
     try {
         await login({
             id: user.id,
@@ -70,9 +68,10 @@ const onLogin = async (user: User) => {
         })
         getCourse(user)
     } catch (error) {
+        endLoading()
+        console.log('登录失败')
         showRefresh.value = !showRefresh.value
         showFailToast('登录失败')
-        console.log('登录失败')
     }
 }
 
@@ -84,10 +83,13 @@ const getCourse = async (user: User) => {
             id: user.id,
             passwd: user.passwd
         })
+        endLoading()
         console.log('课表更新成功')
         localStorage.setItem('courses', JSON.stringify(list))
         showSuccessToast('课表更新成功')
     } catch (error) {
+        endLoading()
+        console.log('课表更新失败');
         showRefresh.value = !showRefresh.value
         console.log('课表更新失败')
         showFailToast('课表更新失败')
@@ -98,6 +100,7 @@ const getCourse = async (user: User) => {
 const refresh = async () => {
     showRefresh.value = !showRefresh.value
     lastRequestTime()
+    endLoading()
 }
 </script>
 

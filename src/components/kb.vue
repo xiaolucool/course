@@ -9,6 +9,7 @@
         <template #right>
           <!-- <van-icon name="search" size="18" /> -->
           <van-icon v-if="!showRefresh" @click="emit('refresh')" name="replay" size="18" />
+          <van-icon v-else class="turn" name="replay" size="18" />
         </template>
       </van-nav-bar>
       <div class="week">
@@ -259,5 +260,33 @@ main {
   bottom: 20vh;
   right: 10px;
   /* transform: translate3d(303px, 500px, 0px); */
+}
+.turn {
+  animation: turn 1s linear infinite;
+}
+@keyframes turn {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    20% {
+        transform: rotate(72deg);
+    }
+
+    40% {
+        transform: rotate(144deg);
+    }
+
+    60% {
+        transform: rotate(216deg);
+    }
+
+    80% {
+        transform: rotate(288deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 </style>

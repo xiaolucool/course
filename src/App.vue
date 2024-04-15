@@ -3,6 +3,7 @@ import { ref, onMounted, watchEffect } from 'vue'
 import { RouterLink, RouterView, useRouter } from 'vue-router'
 import { getCourseList } from '@/api/course'
 import { showFailToast, showSuccessToast } from 'vant'
+
 const router = useRouter()
 const path = ref('')
 onMounted(() => {
@@ -36,6 +37,7 @@ const getCourse = async () => {
 getCourse()
 
 const active = ref(0);
+
 </script>
 <template>
   <div>
