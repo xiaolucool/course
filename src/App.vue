@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted, watchEffect } from 'vue'
 import { RouterLink, RouterView, useRouter } from 'vue-router'
+import { getCourseList } from '@/api/course'
+import { showFailToast, showSuccessToast } from 'vant'
 const router = useRouter()
 const path = ref('')
 onMounted(() => {
@@ -11,6 +13,27 @@ onMounted(() => {
     path.value = router.currentRoute.value.path
   })
 })
+
+// 更新本地缓存
+const getCourse = async () => {
+  const courses = JSON.parse(localStorage.getItem('courses') || '{}')
+  if (courses) {
+  } else {
+    const user = JSON.parse(localStorage.getItem('user') || '{}')
+    console.log('更新课表')
+    try {
+      const list = await getCourseList({
+        id: user.id,
+        passwd: user.passwd
+      })
+      localStorage.setItem('courses', JSON.stringify(list))
+      showSuccessToast('课表更新成功')
+    } catch (error) {
+      showFailToast('课表更新失败')
+    }
+  }
+}
+getCourse()
 
 const active = ref(0);
 </script>
